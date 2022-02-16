@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  web:
+    image: nginx:1.21
+    depends_on:
+      - php-fpm
+    volumes:
+      - ./app:/var/www/site
+      - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8080:80"
+    restart: always
+    working_dir: /var/www/site
+
+  php-fpm:
+    image: php:8.1-fpm
+    volumes:
+      - ./app:/var/www/site
+
+  php-cli:
+    image: php:8.1-cli
+    volumes:
+      - ./app:/var/www/site
+
+  composer:
+    image: composer:2.2.6
+    volumes:
+      - ./app:/var/www/site
+    working_dir: /var/www/site
