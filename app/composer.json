@@ -42,7 +42,7 @@
       "cp -rf vendor/twbs/bootstrap/dist public/bootstrap"
     ],
     "test": "phpunit --testdox --colors=auto tests",
-    "fix": "php-cs-fixer fix src tests",
+    "fix": "php-cs-fixer fix --config=.php_cs.dist.php src tests",
     "lint": "phpcs --standard=PSR12 src tests"
   }
 }
