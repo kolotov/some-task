@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Task3\Kernel;
+namespace App\Task3;
 
 use App\Task3\Entity\Route;
-use App\Task3\Kernel\Core\ControllerInterface;
-use App\Task3\Kernel\Core\Exception\NotFoundException;
-use App\Task3\Kernel\Core\ServerRequest;
-use App\Task3\Kernel\Core\Response;
+use App\Task3\Kernel\ControllerInterface;
+use App\Task3\Exception\NotFoundException;
+use App\Task3\Kernel\ServerRequest;
+use App\Task3\Kernel\Response;
 use Throwable;
 
 class Kernel
@@ -24,7 +24,7 @@ class Kernel
     public static function create(): Kernel
     {
         $kernel = new self();
-        (require $kernel::getAppDir() . '/routes.php')($kernel);
+        (require $kernel::getAppDir() . 'routes.php')($kernel);
         return $kernel;
     }
 
@@ -124,6 +124,6 @@ class Kernel
      */
     public static function getAppDir(): string
     {
-        return __DIR__ . '/..';
+        return __DIR__ . '/';
     }
 }

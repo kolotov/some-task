@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Task3\Kernel\Core;
+namespace App\Task3\Kernel;
 
-use App\Task3\Kernel\Kernel;
+use App\Task3\Kernel;
 
 /**
  * Template parser
@@ -20,7 +20,7 @@ class ContentBuilder
      */
     public function __construct(string $template)
     {
-        $this->path = Kernel::getAppDir() . '/Template/' . $template;
+        $this->path = Kernel::getAppDir() . 'Template/' . $template;
         $this->content = file_get_contents($this->path);
     }
 

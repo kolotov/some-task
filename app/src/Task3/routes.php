@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\Task3\Controller\HomePage;
-use App\Task3\Kernel\Kernel;
+use App\Task3\Kernel;
 
 /**
  * Configure routes
