@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Task3\Controller;
 
-use App\Task3\Kernel\ContentBuilder;
-use App\Task3\Kernel\ControllerInterface;
-use App\Task3\Kernel\Response;
-use App\Task3\Kernel\ServerRequest;
+use App\Task3\Interfaces\ControllerInterface;
+use App\Task3\Http\Response;
+use App\Task3\Http\ServerRequest;
+use App\Task3\Service\ContentBuilder;
 
 class HomePage implements ControllerInterface
 {

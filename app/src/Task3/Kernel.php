@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Task3;
 
 use App\Task3\Entity\Route;
-use App\Task3\Kernel\ControllerInterface;
+use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Exception\NotFoundException;
-use App\Task3\Kernel\ServerRequest;
-use App\Task3\Kernel\Response;
+use App\Task3\Http\ServerRequest;
+use App\Task3\Http\Response;
 use Throwable;
 
 class Kernel

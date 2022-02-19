@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Task3\Kernel;
+namespace App\Task3\Service;
 
 use App\Task3\Kernel;
 

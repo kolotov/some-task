@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Task3\Kernel;
+namespace App\Task3\Http;
 
 /**
  * Client response
@@ -26,7 +26,7 @@ class Response
     public function __construct(?string $content = '', int $status = 200, array $headers = [])
     {
         $this->headers = ["Content-Type: text/html; charset=UTF-8", "Cache-Control: no-cache"];
-        $this->headers = array_merge($this->headers, $headers);;
+        $this->headers = array_merge($this->headers, $headers);
         $this->setContent($content);
         $this->setStatusCode($status);
     }

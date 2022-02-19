@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Task3\Kernel;
+namespace App\Task3\Http;
 
 /**
  * Create request from server var
@@ -16,11 +16,8 @@ class ServerRequest
     public function __construct()
     {
         $this->uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
-
         $query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?: '';
-
         parse_str($query, $this->params);
-
         $this->body  = file_get_contents('php://input') ?: '';
     }
 
