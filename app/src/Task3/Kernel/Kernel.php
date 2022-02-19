@@ -24,7 +24,7 @@ class Kernel
     public static function create(): Kernel
     {
         $kernel = new self();
-        (require __DIR__ . '/../routes.php')($kernel);
+        (require $kernel::getAppDir() . '/routes.php')($kernel);
         return $kernel;
     }
 
@@ -116,5 +116,14 @@ class Kernel
             Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
             Response::HTTP_INTERNAL_SERVER_ERROR
         );
+    }
+
+    /**
+     * Project root path
+     * @return string
+     */
+    public static function getAppDir(): string
+    {
+        return __DIR__ . '/..';
     }
 }
