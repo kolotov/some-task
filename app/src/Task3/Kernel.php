@@ -24,7 +24,7 @@ class Kernel
     public static function create(): Kernel
     {
         $kernel = new self();
-        (require $kernel::getAppDir() . 'routes.php')($kernel);
+        (require $kernel::getAppDir() . 'Config/routes.php')($kernel);
         return $kernel;
     }
 
@@ -60,12 +60,12 @@ class Kernel
      */
     private function handle(ServerRequest $request): Response
     {
-        try {
+      //  try {
             $handler = $this->getController($request);
             return $handler->handle($request);
-        } catch (Throwable $e) {
+       // } catch (Throwable $e) {
             return $this->processException($e, $request);
-        }
+      //  }
     }
 
     /**
