@@ -43,12 +43,13 @@ class Kernel
      * Add route
      *
      * @param string $path
+     * @param string $method
      * @param string $className
      * @return Kernel
      */
-    public function route(string $path, string $className): Kernel
+    public function route(string $path, string $method, string $className): Kernel
     {
-        $this->routes[Route::buildName($path)] = new Route($path, $className);
+        $this->routes[Route::buildName($path)][$method] = new Route($path, $className);
         return $this;
     }
 
@@ -76,11 +77,12 @@ class Kernel
     private function getController(ServerRequest $request): ControllerInterface
     {
         $routeName = Route::buildName($request->getUri());
+        $method = $request->getMethod();
 
-        if (!key_exists($routeName, $this->routes)) {
+        if (!isset($this->routes[$routeName][$method])) {
             throw new NotFoundException();
         }
-        $className = $this->routes[$routeName]->getController();
+        $className = $this->routes[$routeName][$method]->getController();
         return new $className();
     }
 

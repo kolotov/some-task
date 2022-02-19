@@ -11,14 +11,16 @@ class ServerRequest
 {
     private string $uri;
     private string $body;
+    private string $method;
     private array $params = [];
 
     public function __construct()
     {
-        $this->uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/';
+        $this->setUri(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/');
+        $this->setBody(file_get_contents('php://input') ?: '');
+        $this->setMethod($_SERVER['REQUEST_METHOD'] ?? '');
         $query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?: '';
         parse_str($query, $this->params);
-        $this->body  = file_get_contents('php://input') ?: '';
     }
 
     /**
@@ -51,6 +53,22 @@ class ServerRequest
     public function setBody(string $body): void
     {
         $this->body = $body;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     */
+    public function setMethod(string $method): void
+    {
+        $this->method = $method;
     }
 
     /**

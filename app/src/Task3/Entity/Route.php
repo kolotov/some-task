@@ -64,6 +64,7 @@ class Route
      */
     public static function buildName($path): string
     {
-        return str_replace('/', '_', $path);
+        $normalized = trim($path, " \/") ?: '_';
+        return str_replace('/', '_', $normalized);
     }
 }

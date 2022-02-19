@@ -10,7 +10,7 @@ use App\Task3\Http\ServerRequest;
 use App\Task3\Service\ContentBuilder;
 use App\Task3\Service\Database\UserRepository;
 
-class HomePage implements ControllerInterface
+class HomePageController implements ControllerInterface
 {
     public function handle(ServerRequest $request): Response
     {
