@@ -85,12 +85,14 @@ class Kernel
     }
 
     /**
-     * Render page
+     * ContentBuilder page
      *
      * @param Response $response
      */
     private function view(Response $response): void
     {
+        $headers = $response->getHeaders();
+        array_walk($headers, fn(string $header) => header($header));
         print_r($response->getContent());
     }
 
@@ -109,5 +111,10 @@ class Kernel
                 Response::HTTP_NOT_FOUND
             );
         }
+
+        return new Response(
+            Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
+            Response::HTTP_INTERNAL_SERVER_ERROR
+        );
     }
 }

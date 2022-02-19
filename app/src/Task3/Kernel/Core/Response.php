@@ -25,7 +25,8 @@ class Response
 
     public function __construct(?string $content = '', int $status = 200, array $headers = [])
     {
-        $this->headers = $headers;
+        $this->headers = ["Content-Type: text/html; charset=UTF-8", "Cache-Control: no-cache"];
+        $this->headers = array_merge($this->headers, $headers);;
         $this->setContent($content);
         $this->setStatusCode($status);
     }
@@ -75,6 +76,8 @@ class Response
      */
     public function setStatusCode(int $status): void
     {
+        $headers = ["HTTP/1.1 {$status} " . Response::$statusTexts[$status]];
+        $this->headers = array_merge($this->headers, $headers);
         $this->status = $status;
     }
 }
