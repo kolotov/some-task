@@ -1,3 +1,6 @@
+## Hosted
+Counter app http://localhost:8080/
+
 ## Commands
 * ``make init`` build and run project
 * ``make test`` run tests
@@ -6,7 +9,7 @@
 ## Structure
 1. Tags Parser [Code][1] [Tests][2]
 2. Sql query [Code][3] 
-3. Task3 [Code][4]
+3. Counter app [Code][4]
 
 [1]: https://github.com/kolotov/some-task/blob/main/app/src/Task1/ParseTags.php
 [2]: https://github.com/kolotov/some-task/blob/main/app/tests/Task1/ParseTagsTest.php
