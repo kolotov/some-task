@@ -16,13 +16,12 @@ class HomePage implements ControllerInterface
     {
         $mainPage = new ContentBuilder('main.html');
         $content = $mainPage->set('content', 'test')->set('title', 'test task')->build();
-
+/*
         (new UserRepository())
             ->query(
                 'CREATE TABLE users (id INT, login VARCHAR(50), passwordHash VARCHAR)'
-            )
-            ->execute();
-
+            )->execute();
+*/
         return new Response(
             $content,
             Response::HTTP_OK
