@@ -1,4 +1,5 @@
 init: down build up \
+	  create-db \
  	  composer-install
 
 build:
@@ -12,6 +13,11 @@ down:
 
 restart:
 	docker-compose restart
+
+create-db:
+	docker-compose run --rm php-cli bash -c \
+	"apt update && apt install sqlite3 \
+	 && sqlite3 /var/www/app/var/db.sqlite -init /var/www/app/var/db.sql .quit"
 
 composer-install:
 	docker-compose run --rm composer install

@@ -6,25 +6,26 @@ services:
     depends_on:
       - php-fpm
     volumes:
-      - ./app:/var/www/site
+      - ./app:/var/www/app
       - ./docker/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "8080:80"
     restart: always
-    working_dir: /var/www/site
+    working_dir: /var/www/app
 
   php-fpm:
     image: php:8.1-fpm
     volumes:
-      - ./app:/var/www/site
+      - ./app:/var/www/app
 
   php-cli:
     image: php:8.1-cli
     volumes:
-      - ./app:/var/www/site
+      - ./app:/var/www/app
+      - ./docker/db/db.sql:/var/www/app/var/db.sql
 
   composer:
     image: composer:2.2.6
     volumes:
-      - ./app:/var/www/site
-    working_dir: /var/www/site
+      - ./app:/var/www/app
+    working_dir: /var/www/app

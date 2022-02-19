@@ -10,6 +10,6 @@ use App\Task3\Service\Database\PdoDataBase;
  */
 
 return static function (PdoDataBase $db): PdoDataBase {
-    $db->setDsn('sqlite:' . Kernel::getAppDir() . 'counter.db');
+    $db->setDsn('sqlite:' . Kernel::getAppDir() . '/../../var/db.sqlite');
     return $db;
 };
