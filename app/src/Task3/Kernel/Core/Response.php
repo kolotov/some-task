@@ -9,6 +9,16 @@ namespace App\Task3\Kernel\Core;
  */
 class Response
 {
+    public const HTTP_OK = 200;
+    public const HTTP_NOT_FOUND = 404;
+    public const HTTP_INTERNAL_SERVER_ERROR = 500;
+
+    public static array $statusTexts = [
+        200 => 'OK',
+        404 => 'Not Found',
+        500 => 'Internal Server Error',
+    ];
+
     private array $headers;
     private string $content;
     private int $status;

@@ -6,4 +6,5 @@ namespace App\Task3\Kernel\Core;
 
 interface ControllerInterface
 {
+    public function handle(ServerRequest $request): Response;
 }

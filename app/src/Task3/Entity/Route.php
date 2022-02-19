@@ -48,4 +48,22 @@ class Route
     {
         $this->controller = $controller;
     }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return self::buildName($this->path);
+    }
+
+    /**
+     * Create name path
+     * @param
+     * @return string
+     */
+    public static function buildName($path): string
+    {
+        return str_replace('/', '_', $path);
+    }
 }
