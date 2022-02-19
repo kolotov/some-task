@@ -5,43 +5,73 @@ declare(strict_types=1);
 namespace App\Tests\Task1;
 
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 use function App\Task1\parseTags;
 
 /**
  * Test parse tags
  *
- * @covers \App\Task1\ParseTags;
+ * @covers \App\Task1\parseTags;
  */
 class ParseTagsTest extends TestCase
 {
     /**
      * Test function Parse Tags
      *
-     * @dataProvider dataCases
+     * @dataProvider dataSuccessCases
      */
-    public function testParseTags(array $expected, string $text): void
+    public function testSuccessParseTags(array $expected, string $text): void
     {
         self::assertEqualsCanonicalizing($expected, parseTags($text));
     }
 
-    public function dataCases(): array
+    public function dataSuccessCases(): array
     {
         return [
-            [
-                'TAG_NAME' => ['description' => 'test description', 'data' => 'test data'],
-                '[TAG_NAME:test description]test data[/TAG_NAME]'
-            ],
+            [[], 'text text text text'],
             [[], ''],
-            [[], '[TAG_NAME:description]data[TAG_NAME]'],
-            [[], 'TAG_NAME:description]data[/TAG_NAME]'],
             [
                 [
-                    'TAG_NAME1' => ['description' => 'description1', 'data' => 'data1'],
-                    'TAG_NAME2' => ['description' => 'description2', 'data' => 'data2'],
+                    'TAG_NAME' =>
+                        ['description' => 'test description', 'data' => 'test data'],
+                    'TAG2' =>
+                        ['description' => 'test description2', 'data' => 'test data2'],
                 ],
-                '[TAG_NAME1:description1]data1[/TAG_NAME1] [TAG_NAME2:description2]data2[/TAG_NAME2]'
+                'text text [TAG_NAME:test description]test data[/TAG_NAME] text text
+                text text [TAG2:test description2]test data2[/TAG2] text text'
             ],
+            [
+                ['TAG_NAME' => ['description' => '', 'data' => 'test data']],
+                'text text [TAG_NAME]test data  [/TAG_NAME] text text'
+            ],
+            [
+                ['TAG_NAME' => ['description' => '', 'data' => '']],
+                'text text [TAG_NAME][/TAG_NAME] text text'],
+
+        ];
+    }
+
+    /**
+     * Test exception test
+     *
+     * @dataProvider dataFailCases
+     */
+    public function testFailParseTags(string $text): void
+    {
+        self::expectException(Throwable::class);
+        parseTags($text);
+    }
+
+    public function dataFailCases(): array
+    {
+        return [
+            ['test [][/] text [:][/] text [TAG][/TAG] text
+              :test []description]test data[/TAG_NAME] text [/ddd] text
+              text text [TAG2:test description2]test data2[/TAG2] text text'],
+            ['text text [TAG_NAME]test data  [/TAG_NAME2] text text'],
+            ['text text [TAG_NAME][TAG2_NAME][/TAG2_NAME][/TAG_NAME] text text'],
+            ['text text [TAG_NAME:desc]test[/TAG_NAME][TAG_NAME]wew[/TAG_NAME]text text'],
         ];
     }
 }
