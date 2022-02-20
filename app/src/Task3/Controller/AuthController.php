@@ -8,6 +8,8 @@ use App\Task3\Entity\User;
 use App\Task3\Http\Response;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ControllerInterface;
+use App\Task3\Service\AuthService;
+use App\Task3\Service\ContentBuilder;
 use App\Task3\Service\Database\UserRepository;
 use App\Task3\Service\HasherService;
 use JsonException;
@@ -33,10 +35,11 @@ class AuthController extends ContentBuilder implements ControllerInterface
             $header->hash($data->password)
         );
 
-        if ($repository->hasUser($user->getUsername())) {
-            //TODO: Auth
+        if ((new AuthService())->authentication($user)) {
+            return $this->renderJson(['status' => 'ok']);
         }
 
+        $repository = new UserRepository();
         $repository->save($user);
         return $this->renderJson(['status' => 'ok']);
     }
