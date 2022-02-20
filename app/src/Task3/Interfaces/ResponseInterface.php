@@ -38,4 +38,14 @@ interface ResponseInterface
      * @param int $status
      */
     public function setStatusCode(int $status): void;
+
+    /**
+     * @param string $cookie
+     */
+    public function setCookie(string $cookie): void;
+
+    /**
+     * @return array
+     */
+    public function getCookie(): array;
 }

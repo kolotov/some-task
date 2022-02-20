@@ -22,6 +22,8 @@ class Response implements ResponseInterface
     ];
 
     private array $headers = [];
+    private array $cookies = [];
+
     private string $content;
     private int $status;
 
@@ -80,5 +82,21 @@ class Response implements ResponseInterface
         $headers = ["HTTP/1.1 {$status} " . Response::$statusTexts[$status]];
         $this->headers = array_merge($this->headers, $headers);
         $this->status = $status;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCookie(string $cookie): void
+    {
+        $this->cookies[] = "Set-Cookie: $cookie";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCookie(): array
+    {
+        return $this->cookies;
     }
 }
