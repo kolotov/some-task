@@ -103,7 +103,18 @@ class Kernel
      */
     private function view(ResponseInterface $response): void
     {
-        $headers = $response->getHeaders();
+        $this->setHeaders($response->getHeaders());
+        $this->setHeaders($response->getCookie());
+        print_r($response->getContent());
+    }
+
+    /**
+     * Set client headers
+     *
+     * @param array $headers
+     */
+    private function setHeaders(array $headers): void
+    {
         array_walk(
             $headers,
             static function (string $header, string $key) {
@@ -114,7 +125,6 @@ class Kernel
                 }
             }
         );
-        print_r($response->getContent());
     }
 
     /**
