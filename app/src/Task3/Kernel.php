@@ -11,6 +11,11 @@ use App\Task3\Http\ServerRequest;
 use App\Task3\Http\Response;
 use Throwable;
 
+/**
+ * Kernel framework
+ * TODO:: God object. Need should be divided it
+ * TODO:: Implement container
+ */
 class Kernel
 {
     /** @var Route[] */
@@ -61,15 +66,17 @@ class Kernel
      */
     private function handle(ServerRequest $request): Response
     {
-      //  try {
+        try {
             $handler = $this->getController($request);
             return $handler->handle($request);
-       // } catch (Throwable $e) {
+        } catch (Throwable $e) {
             return $this->processException($e, $request);
-      //  }
+        }
     }
 
     /**
+     * Dispatcher route
+     *
      * @param ServerRequest $request
      * @return ControllerInterface
      * @throws NotFoundException
@@ -80,7 +87,7 @@ class Kernel
         $method = $request->getMethod();
 
         if (!isset($this->routes[$routeName][$method])) {
-            throw new NotFoundException();
+            throw new NotFoundException(Response::$statusTexts[Response::HTTP_NOT_FOUND]);
         }
         $className = $this->routes[$routeName][$method]->getController();
         return new $className();
@@ -116,16 +123,31 @@ class Kernel
      */
     private function processException(Throwable $e, ServerRequest $request): Response
     {
+        $contentType = $request->getHeaders()['Content-Type'] ?? '';
+        $mime = explode(';', $contentType)[0];
+
+        $content = match ($mime) {
+            'application/json' => json_encode(['status' => 'error', 'message' => $e->getMessage()]),
+            default => $e->getMessage()
+        };
+
+        $headers = match ($mime) {
+            'application/json' => ["Content-Type" => $contentType],
+            default => ["Content-Type" => "text/html; charset=UTF-8", "Cache-Control" => "no-cache"]
+        };
+
         if ($e instanceof NotFoundException) {
             return new Response(
-                Response::$statusTexts[Response::HTTP_NOT_FOUND],
-                Response::HTTP_NOT_FOUND
+                $content,
+                Response::HTTP_NOT_FOUND,
+                $headers
             );
         }
 
         return new Response(
-            Response::$statusTexts[Response::HTTP_INTERNAL_SERVER_ERROR],
-            Response::HTTP_INTERNAL_SERVER_ERROR
+            $content,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            $headers
         );
     }
 

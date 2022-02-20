@@ -27,7 +27,7 @@ const submitAuthForm = (e) => {
  * @returns {Promise<any>}
  */
 const sendRequest = async(method, url, data = {}) => {
-    const headers = {'Content-Type': 'application/json;charset=utf-8'};
+    const headers = {'Content-Type': 'application/json; charset=utf-8'};
     const params = {
         PUT: {
             method: 'PUT',

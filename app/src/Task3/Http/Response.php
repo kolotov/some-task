@@ -19,14 +19,13 @@ class Response
         500 => 'Internal Server Error',
     ];
 
-    private array $headers;
+    private array $headers = [];
     private string $content;
     private int $status;
 
     public function __construct(?string $content = '', int $status = 200, array $headers = [])
     {
-        $this->headers = ["Content-Type" => "text/html; charset=UTF-8", "Cache-Control" => "no-cache"];
-        $this->headers = array_merge($this->headers, $headers);
+        $this->setHeaders($headers);
         $this->setContent($content);
         $this->setStatusCode($status);
     }
@@ -44,7 +43,7 @@ class Response
      */
     public function setHeaders(array $headers): void
     {
-        $this->headers = $headers;
+        $this->headers = array_merge($this->headers, $headers);
     }
 
     /**

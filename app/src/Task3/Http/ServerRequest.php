@@ -12,6 +12,7 @@ class ServerRequest
     private string $uri;
     private string $body;
     private string $method;
+    private array $headers = [];
     private array $params = [];
 
     public function __construct()
@@ -19,6 +20,11 @@ class ServerRequest
         $this->setUri(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/');
         $this->setBody(file_get_contents('php://input') ?: '');
         $this->setMethod($_SERVER['REQUEST_METHOD'] ?? '');
+
+        if (isset($_SERVER["CONTENT_TYPE"])) {
+            $this->setHeaders(["Content-Type" => $_SERVER["CONTENT_TYPE"]]);
+        }
+
         $query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?: '';
         parse_str($query, $this->params);
     }
@@ -85,5 +91,21 @@ class ServerRequest
     public function setParams(array $params): void
     {
         $this->params = $params;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param array $headers
+     */
+    public function setHeaders(array $headers): void
+    {
+        $this->headers = array_merge($this->headers, $headers);
     }
 }

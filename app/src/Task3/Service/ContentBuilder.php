@@ -66,7 +66,8 @@ class ContentBuilder
     {
         return new Response(
             $this->build($this->content),
-            Response::HTTP_OK
+            Response::HTTP_OK,
+            ["Content-Type" => "text/html; charset=UTF-8", "Cache-Control" => "no-cache"]
         );
     }
 
@@ -82,7 +83,7 @@ class ContentBuilder
         return new Response(
             json_encode($json, JSON_THROW_ON_ERROR),
             Response::HTTP_OK,
-            ["Content-Type" => "application/json; charset=UTF-8"]
+            ["Content-Type" => "application/json; charset=UTF-8", "Cache-Control" => "no-cache"]
         );
     }
 }
