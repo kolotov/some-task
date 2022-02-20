@@ -6,6 +6,7 @@ namespace App\Task3\Service;
 
 use App\Task3\Http\Response;
 use App\Task3\Kernel;
+use JsonException;
 
 /**
  * Template processor
@@ -66,6 +67,22 @@ class ContentBuilder
         return new Response(
             $this->build($this->content),
             Response::HTTP_OK
+        );
+    }
+
+    /**
+     * Render json content
+     *
+     * @param array $json
+     * @return Response
+     * @throws JsonException
+     */
+    public function renderJson(array $json): Response
+    {
+        return new Response(
+            json_encode($json, JSON_THROW_ON_ERROR),
+            Response::HTTP_OK,
+            ["Content-Type" => "application/json; charset=UTF-8"]
         );
     }
 }

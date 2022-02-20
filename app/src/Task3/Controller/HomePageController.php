@@ -9,13 +9,11 @@ use App\Task3\Http\Response;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Service\ContentBuilder;
 
-class HomePageController implements ControllerInterface
+class HomePageController extends ContentBuilder implements ControllerInterface
 {
     public function handle(ServerRequest $request): Response
     {
-        $mainPage = new ContentBuilder();
-
-        return $mainPage
+        return $this
             ->template('main.html')
             ->set('content', 'test')
             ->set('title', 'test task')
