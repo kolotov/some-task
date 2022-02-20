@@ -4,19 +4,35 @@ declare(strict_types=1);
 
 namespace App\Task3\Controller;
 
+use App\Task3\Entity\User;
 use App\Task3\Interfaces\ControllerInterface;
-use App\Task3\Http\Response;
 use App\Task3\Http\ServerRequest;
+use App\Task3\Interfaces\ResponseInterface;
+use App\Task3\Service\AuthService;
 use App\Task3\Service\ContentBuilder;
 
 class HomePageController extends ContentBuilder implements ControllerInterface
 {
-    public function handle(ServerRequest $request): Response
+    /**
+     * @param ServerRequest $request
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequest $request): ResponseInterface
     {
+        /** @var User $user */
+        $user = (new AuthService($request))->getUser();
+
+        if (null === $user) {
+            return $this
+                ->template('main.html')
+                ->set('content', 'test')
+                ->set('title', 'test task')
+                ->render();
+        }
+
         return $this
-            ->template('main.html')
-            ->set('content', 'test')
-            ->set('title', 'test task')
+            ->template('counter.html')
+            ->set('user_name', 'Welcome' . $user->getUsername())
             ->render();
     }
 }

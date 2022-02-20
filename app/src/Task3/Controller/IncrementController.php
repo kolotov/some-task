@@ -7,15 +7,17 @@ namespace App\Task3\Controller;
 use App\Task3\Http\Response;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ControllerInterface;
+use App\Task3\Interfaces\ResponseInterface;
 
 class IncrementController implements ControllerInterface
 {
-    public function handle(ServerRequest $request): Response
+    /**
+     * @param ServerRequest $request
+     * @return ResponseInterface
+     */
+    public function handle(ServerRequest $request): ResponseInterface
     {
         // TODO: Implement handle() method.
-        return new Response(
-            '$content',
-            Response::HTTP_OK
-        );
+        return new Response('$content');
     }
 }

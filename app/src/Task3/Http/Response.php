@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Task3\Http;
 
+use App\Task3\Interfaces\ResponseInterface;
+
 /**
  * Client response
  */
-class Response
+class Response implements ResponseInterface
 {
     public const HTTP_OK = 200;
     public const HTTP_NOT_FOUND = 404;
@@ -31,7 +33,7 @@ class Response
     }
 
     /**
-     * @return array
+     * {@inheritDoc}
      */
     public function getHeaders(): array
     {
@@ -39,7 +41,7 @@ class Response
     }
 
     /**
-     * @param array $headers
+     * {@inheritDoc}
      */
     public function setHeaders(array $headers): void
     {
@@ -47,7 +49,7 @@ class Response
     }
 
     /**
-     * @return string
+     * {@inheritDoc}
      */
     public function getContent(): string
     {
@@ -55,7 +57,7 @@ class Response
     }
 
     /**
-     * @param string $content
+     * {@inheritDoc}
      */
     public function setContent(string $content): void
     {
@@ -63,7 +65,7 @@ class Response
     }
 
     /**
-     * @return int
+     * {@inheritDoc}
      */
     public function getStatusCode(): int
     {
@@ -71,7 +73,7 @@ class Response
     }
 
     /**
-     * @param int $status
+     * {@inheritDoc}
      */
     public function setStatusCode(int $status): void
     {

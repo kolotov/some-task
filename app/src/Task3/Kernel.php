@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Task3;
 
 use App\Task3\Entity\Route;
+use App\Task3\Http\JsonResponse;
 use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Exception\NotFoundException;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Http\Response;
+use App\Task3\Interfaces\ResponseInterface;
+use JsonException;
 use Throwable;
 
 /**
@@ -62,9 +65,9 @@ class Kernel
      * Handle request
      *
      * @param ServerRequest $request
-     * @return Response
+     * @return ResponseInterface
      */
-    private function handle(ServerRequest $request): Response
+    private function handle(ServerRequest $request): ResponseInterface
     {
         try {
             $handler = $this->getController($request);
@@ -96,9 +99,9 @@ class Kernel
     /**
      * Render page for client
      *
-     * @param Response $response
+     * @param ResponseInterface $response
      */
-    private function view(Response $response): void
+    private function view(ResponseInterface $response): void
     {
         $headers = $response->getHeaders();
         array_walk(
@@ -120,35 +123,24 @@ class Kernel
      * @param Throwable $e
      * @param ServerRequest $request
      * @return Response
+     * @throws JsonException
      */
-    private function processException(Throwable $e, ServerRequest $request): Response
+    private function processException(Throwable $e, ServerRequest $request): ResponseInterface
     {
         $contentType = $request->getHeaders()['Content-Type'] ?? '';
         $mime = explode(';', $contentType)[0];
 
-        $content = match ($mime) {
-            'application/json' => json_encode(['status' => 'error', 'message' => $e->getMessage()]),
-            default => $e->getMessage()
+        $data = ['status' => 'error', 'message' => $e->getMessage()];
+
+        $code = match (get_class($e)) {
+            NotFoundException::class => Response::HTTP_NOT_FOUND,
+            default => Response::HTTP_INTERNAL_SERVER_ERROR
         };
 
-        $headers = match ($mime) {
-            'application/json' => ["Content-Type" => $contentType],
-            default => ["Content-Type" => "text/html; charset=UTF-8", "Cache-Control" => "no-cache"]
+        return match ($mime) {
+            'application/json' => new JsonResponse($data, $code),
+            default => new Response($e->getMessage(), $code)
         };
-
-        if ($e instanceof NotFoundException) {
-            return new Response(
-                $content,
-                Response::HTTP_NOT_FOUND,
-                $headers
-            );
-        }
-
-        return new Response(
-            $content,
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            $headers
-        );
     }
 
     /**

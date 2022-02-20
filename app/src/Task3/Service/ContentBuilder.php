@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Task3\Service;
 
-use App\Task3\Http\Response;
+use App\Task3\Http\{Response, JsonResponse};
+use App\Task3\Interfaces\ResponseInterface;
 use App\Task3\Kernel;
 use JsonException;
 
@@ -60,30 +61,30 @@ class ContentBuilder
     /**
      * Render content
      *
-     * @return Response
+     * @return ResponseInterface
      */
-    public function render(): Response
+    public function render(): ResponseInterface
     {
         return new Response(
             $this->build($this->content),
             Response::HTTP_OK,
-            ["Content-Type" => "text/html; charset=UTF-8", "Cache-Control" => "no-cache"]
+            ["Cache-Control" => "no-cache"]
         );
     }
 
     /**
      * Render json content
      *
-     * @param array $json
-     * @return Response
+     * @param array $data
+     * @return ResponseInterface
      * @throws JsonException
      */
-    public function renderJson(array $json): Response
+    public function renderJson(array $data): ResponseInterface
     {
-        return new Response(
-            json_encode($json, JSON_THROW_ON_ERROR),
+        return new JsonResponse(
+            $data,
             Response::HTTP_OK,
-            ["Content-Type" => "application/json; charset=UTF-8", "Cache-Control" => "no-cache"]
+            ["Cache-Control" => "no-cache"]
         );
     }
 }

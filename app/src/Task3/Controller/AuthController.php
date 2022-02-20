@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Task3\Controller;
 
 use App\Task3\Entity\User;
-use App\Task3\Http\Response;
+use App\Task3\Exception\AuthenticationException;
+use App\Task3\Interfaces\ResponseInterface;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ControllerInterface;
-use App\Task3\Service\AuthService;
-use App\Task3\Service\ContentBuilder;
+use App\Task3\Service\{AuthService, ContentBuilder, HasherService};
 use App\Task3\Service\Database\UserRepository;
-use App\Task3\Service\HasherService;
 use JsonException;
 
 /**
@@ -21,25 +20,33 @@ class AuthController extends ContentBuilder implements ControllerInterface
 {
     /**
      * @param ServerRequest $request
-     * @return Response
+     * @return ResponseInterface
      * @throws JsonException
-     * @throws JsonException
+     * @throws AuthenticationException
      */
-    public function handle(ServerRequest $request): Response
+    public function handle(ServerRequest $request): ResponseInterface
     {
+        //TODO:: user DTO
         $data = json_decode($request->getBody(), flags: JSON_THROW_ON_ERROR);
 
-        $header = new HasherService();
-        $user = User::create(
-            $data->username,
-            $header->hash($data->password)
-        );
+        //TODO:: validation
 
-        if ((new AuthService())->authentication($user)) {
+
+        /**
+         * Authentication user
+         */
+        $repository = new UserRepository();
+        if ($repository->hasUser($data->username)) {
+            $auth = new AuthService($request);
+            $auth->authentication($data->username, $data->password);
             return $this->renderJson(['status' => 'ok']);
         }
 
-        $repository = new UserRepository();
+        /**
+         * Join new user
+         */
+        $header = new HasherService();
+        $user = User::create($data->username, $header->hash($data->password));
         $repository->save($user);
         return $this->renderJson(['status' => 'ok']);
     }
