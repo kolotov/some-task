@@ -53,49 +53,51 @@
     </style>
 </head>
 <body>
-<div class="container content p-5">
-    <h1 class="mb-4 mt-3">Join/Login</h1>
-    <div class="container form">
-        <div class="input-group">
-            <div class="input-group mb-3">
-                <span class="input-group-text form-input-label" id="username-group">Username</span>
+<div class="modal-dialog-centered">
+    <div class="container content">
+        <h1 class="mb-4">Join/Login</h1>
+        <div class="container form">
+            <div class="input-group">
+                <div class="input-group mb-3">
+                    <span class="input-group-text form-input-label" id="username-group">Username</span>
 
-                <input
-                        type="text"
-                        id="username"
-                        class="form-control mr-4"
-                        aria-label="Username"
-                        aria-describedby="username-group"
-                />
+                    <input
+                            type="text"
+                            id="username"
+                            class="form-control mr-4"
+                            aria-label="Username"
+                            aria-describedby="username-group"
+                    />
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text form-input-label" id="password-group">Password</span>
+
+                    <input
+                            type="text"
+                            id="password"
+                            class="form-control mr-4"
+                            aria-label="Password"
+                            aria-describedby="password-group"
+                    />
+                </div>
+
+
             </div>
-
-            <div class="input-group mb-3">
-                <span class="input-group-text form-input-label" id="password-group">Password</span>
-
-                <input
-                        type="text"
-                        id="password"
-                        class="form-control mr-4"
-                        aria-label="Password"
-                        aria-describedby="password-group"
-                />
-            </div>
-
-
         </div>
-    </div>
-    <button type="button" id="enter" class="btn btn-warning btn-lg w-25">
-        Enter
-    </button>
+        <button type="button" id="enter" class="btn btn-warning btn-lg w-25">
+            Enter
+        </button>
 
-    <div class="container font-monospace bg-color">
-        <div class="row bold h4">
-            <div class="col">
-                <div
-                        class="alert alert-danger msg d-none"
-                        id="msg-label"
-                        role="alert"
-                ></div>
+        <div class="container font-monospace bg-color mt-5">
+            <div class="row bold h4">
+                <div class="col">
+                    <div
+                            class="alert alert-danger msg d-none"
+                            id="msg-label"
+                            role="alert">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

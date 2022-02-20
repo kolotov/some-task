@@ -53,24 +53,27 @@
     </style>
 </head>
 <body>
-<div class="container content p-5">
-    <h1 class="mb-4 mt-3">0</h1>
-    <div class="container form">
-        <button type="button" id="increment" class="btn btn-warning btn-lg w-25">
-            +1
-        </button>
-        <button type="button" id="exit" class="btn btn-warning btn-lg w-25">
-            Exit
-        </button>
-    </div>
-    <div class="container font-monospace bg-color">
-        <div class="row bold h4">
-            <div class="col">
-                <div
-                        class="alert alert-danger msg d-none"
-                        id="msg-label"
-                        role="alert"
-                ></div>
+<div class="modal-dialog-centered">
+    <div class="container content">
+        <h1 class="mb-4">0</h1>
+        <div class="container form">
+            <h2 class="mb-4 mt-3">{{username}}</h2>
+            <button type="button" id="increment" class="btn btn-warning btn-lg w-25">
+                +1
+            </button>
+            <button type="button" id="exit" class="btn btn-warning btn-lg w-25">
+                Exit
+            </button>
+        </div>
+        <div class="container font-monospace bg-color mt-5">
+            <div class="row bold h4">
+                <div class="col">
+                    <div
+                            class="alert alert-danger msg d-none"
+                            id="msg-label"
+                            role="alert">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

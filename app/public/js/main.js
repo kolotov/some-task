@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", (event) => {
+    const enter = document.getElementById("enter");
+    const exit = document.getElementById("exit");
 
-    document.getElementById("enter").onmousedown = (e) => submitAuthForm(e);
+    if (!!enter) {
+        enter.onmousedown = (e) => submitAuthForm(e);
+    }
+    if (!!exit) {
+        exit.onmousedown = (e) => logout(e);
+    }
 });
 
 /**
@@ -15,7 +22,15 @@ const submitAuthForm = (e) => {
 
         resolve(sendRequest('POST', '/auth', data));
     })
-        .then(result => showResult(result))
+        .then(() => {location.reload()})
+        .catch(error => showMsg(error));
+}
+//        .then(result => showResult(result))
+const logout = (e) => {
+    return new Promise((resolve, reject) => {
+        resolve(sendRequest('GET', '/logout'));
+    })
+        .then(() => {location.reload()})
         .catch(error => showMsg(error));
 }
 
@@ -48,20 +63,23 @@ const sendRequest = async(method, url, data = {}) => {
 
     const response = await fetch(url, params[method]);
     const json = await response.json();
-
-    if (response.message === false) {
+    if (!response.ok) {
         throw new Error(json.message);
     }
-
-    if (method === 'GET') {
-        return json;
-    }
+    return json;
 }
 
 const showResult = (result) => {
 
 }
 
-const showMsg = (error) => {
+const showMsg = (msg) => {
+    const label = document.getElementById('msg-label');
+    if ((String(msg).length) > 0) {
+        label.innerHTML = msg;
+        label.style.setProperty('display', 'block', 'important');
 
-}
+        setTimeout(() => {
+            label.style.setProperty('display', 'none', 'important');
+        }, 2500);
+    }}

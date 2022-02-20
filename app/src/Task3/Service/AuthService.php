@@ -6,8 +6,11 @@ namespace App\Task3\Service;
 
 use App\Task3\Entity\User;
 use App\Task3\Exception\AuthenticationException;
+use App\Task3\Http\AuthSuccessResponse;
+use App\Task3\Http\Cookie;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Service\Database\UserRepository;
+use JsonException;
 
 class AuthService
 {
@@ -65,24 +68,39 @@ class AuthService
      *
      * @param string $login
      * @param string $plainPassword
-     * @return $this
+     * @return AuthSuccessResponse
      * @throws AuthenticationException
+     * @throws JsonException
      */
-    public function authentication(string $login, string $plainPassword): self
+    public function auth(string $login, string $plainPassword): AuthSuccessResponse
     {
+        if (!$this->isSessionStarted) {
+            $this->startSession();
+        }
+
         $user = $this->repository->loadByIdentifier($login);
 
         if (!$this->hasher->verify($user->getPassword(), $plainPassword)) {
             throw new AuthenticationException('Wrong password');
         }
-        $this->token = $this->createToken();
 
+        $this->token = $this->createToken();
+        $_SESSION['username'] = $login;
+        $_SESSION['token'] = $this->token;
+
+        return new AuthSuccessResponse([Cookie::createAuth('token', $this->token)]);
+    }
+
+    /**
+     * logout user
+     */
+    public function logout(): void
+    {
         if (!$this->isSessionStarted) {
             $this->startSession();
         }
-        $_SESSION['username'] = $login;
-        $_SESSION['token'] = $this->token;
-        return $this;
+        $this->clearCookie();
+        $this->endSession();
     }
 
     /**
@@ -128,5 +146,21 @@ class AuthService
         }
 
         $this->isSessionStarted = false;
+    }
+
+    /**
+     * Clear user cookies
+     */
+    private function clearCookie(): void
+    {
+        if (isset($_COOKIE['token'])) {
+            unset($_COOKIE['token']);
+            setcookie('token', '', -1, '/');
+        }
+
+        if (isset($_COOKIE['username'])) {
+            unset($_COOKIE['username']);
+            setcookie('username', '', -1, '/');
+        }
     }
 }

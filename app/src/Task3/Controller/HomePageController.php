@@ -27,13 +27,14 @@ class HomePageController extends ContentBuilder implements ControllerInterface
         if (null === $user) {
             return $this
                 ->template('main.html')
-                ->set('title', 'test task')
+                ->set('title', 'Join/login')
                 ->render();
         }
 
         return $this
             ->template('counter.html')
-            ->set('user_name', 'Welcome' . $user->getUsername())
+            ->set('title', 'Welcome' . $user->getUsername())
+            ->set('username', $user->getUsername())
             ->render();
     }
 }

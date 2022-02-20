@@ -6,12 +6,10 @@ namespace App\Task3\Controller;
 
 use App\Task3\Entity\User;
 use App\Task3\Exception\AuthenticationException;
-use App\Task3\Http\AuthSuccessResponse;
-use App\Task3\Http\Cookie;
 use App\Task3\Interfaces\ResponseInterface;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ControllerInterface;
-use App\Task3\Service\{AuthService, ContentBuilder, HasherService};
+use App\Task3\Service\{AuthService, HasherService};
 use App\Task3\Service\Database\UserRepository;
 use JsonException;
 use Webmozart\Assert\Assert;
@@ -19,7 +17,7 @@ use Webmozart\Assert\Assert;
 /**
  * Join and Login User
  */
-class AuthController extends ContentBuilder implements ControllerInterface
+class AuthController implements ControllerInterface
 {
     /**
      * @param ServerRequest $request
@@ -45,10 +43,7 @@ class AuthController extends ContentBuilder implements ControllerInterface
          * Authentication user
          */
         if ($repository->hasUser($data->username)) {
-            $token = $auth
-                ->authentication($data->username, $data->password)
-                ->getToken();
-            return new AuthSuccessResponse([Cookie::createAuth('token', $token)]);
+            return $auth->auth($data->username, $data->password);
         }
 
         /**
@@ -56,6 +51,6 @@ class AuthController extends ContentBuilder implements ControllerInterface
          */
         $user = User::create($data->username, $header->hash($data->password));
         $repository->save($user);
-        return $this->renderJson(['status' => 'ok']);
+        return $auth->auth($data->username, $data->password);
     }
 }
