@@ -95,7 +95,7 @@ class Response implements ResponseInterface
     /**
      * {@inheritDoc}
      */
-    public function getCookie(): array
+    public function getCookies(): array
     {
         return $this->cookies;
     }

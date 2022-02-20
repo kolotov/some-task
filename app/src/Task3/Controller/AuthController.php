@@ -14,6 +14,7 @@ use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Service\{AuthService, ContentBuilder, HasherService};
 use App\Task3\Service\Database\UserRepository;
 use JsonException;
+use Webmozart\Assert\Assert;
 
 /**
  * Join and Login User
@@ -28,18 +29,22 @@ class AuthController extends ContentBuilder implements ControllerInterface
      */
     public function handle(ServerRequest $request): ResponseInterface
     {
-        //TODO:: user DTO
-        $data = json_decode($request->getBody(), flags: JSON_THROW_ON_ERROR);
+        $repository = new UserRepository();
+        $header = new HasherService();
+        $auth = new AuthService($request, $repository, $header);
 
+        //TODO:: user DTO
         //TODO:: validation
 
+        $data = json_decode($request->getBody(), flags: JSON_THROW_ON_ERROR);
+
+        Assert::lengthBetween($data->username, 3, 50, 'username length must be between 3 and 50');
+        Assert::lengthBetween($data->password, 3, 50, 'password length must be between 3 and 16');
 
         /**
          * Authentication user
          */
-        $repository = new UserRepository();
         if ($repository->hasUser($data->username)) {
-            $auth = new AuthService($request);
             $token = $auth
                 ->authentication($data->username, $data->password)
                 ->getToken();
@@ -49,7 +54,6 @@ class AuthController extends ContentBuilder implements ControllerInterface
         /**
          * Join new user
          */
-        $header = new HasherService();
         $user = User::create($data->username, $header->hash($data->password));
         $repository->save($user);
         return $this->renderJson(['status' => 'ok']);

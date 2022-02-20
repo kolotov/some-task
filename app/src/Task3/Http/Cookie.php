@@ -130,7 +130,7 @@ class Cookie
     {
         $cookies = [];
         $cookies[] = "{$this->name}={$this->value}";
-        $cookies[] = "Path={$this->path}";
+        $cookies[] = "path={$this->path}";
         $cookies[] = $this->isSecure() ? 'Secure' : '';
         $cookies[] = $this->isHttpOnly() ? 'HttpOnly' : '';
         return implode("; ", array_filter($cookies));

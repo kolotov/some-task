@@ -49,8 +49,8 @@ const sendRequest = async(method, url, data = {}) => {
     const response = await fetch(url, params[method]);
     const json = await response.json();
 
-    if (response.ok === false) {
-        throw new Error(json.error.message);
+    if (response.message === false) {
+        throw new Error(json.message);
     }
 
     if (method === 'GET') {

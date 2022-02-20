@@ -10,6 +10,8 @@ use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ResponseInterface;
 use App\Task3\Service\AuthService;
 use App\Task3\Service\ContentBuilder;
+use App\Task3\Service\Database\UserRepository;
+use App\Task3\Service\HasherService;
 
 class HomePageController extends ContentBuilder implements ControllerInterface
 {
@@ -19,13 +21,12 @@ class HomePageController extends ContentBuilder implements ControllerInterface
      */
     public function handle(ServerRequest $request): ResponseInterface
     {
-        /** @var User $user */
-        $user = (new AuthService($request))->getUser();
+        $auth = new AuthService($request, new UserRepository(), new HasherService());
+        $user =  $auth->getUser();
 
         if (null === $user) {
             return $this
                 ->template('main.html')
-                ->set('content', 'test')
                 ->set('title', 'test task')
                 ->render();
         }

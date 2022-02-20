@@ -51,7 +51,7 @@ class ContentBuilder
     {
         array_walk(
             $this->tokens,
-            function ($value, $token) use ($content) {
+            function ($value, $token) use (&$content) {
                 $content = str_replace("{{{$token}}}", $value, $content);
             }
         );

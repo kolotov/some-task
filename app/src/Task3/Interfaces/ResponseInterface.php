@@ -47,5 +47,5 @@ interface ResponseInterface
     /**
      * @return array
      */
-    public function getCookie(): array;
+    public function getCookies(): array;
 }

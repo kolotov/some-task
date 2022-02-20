@@ -30,6 +30,7 @@ class UserRepository extends Repository
 
         $user = User::create($data->username, $data->password_hash);
         $user->setId($data->id);
+        $user->setCounter($data->counter);
         return $user;
     }
 

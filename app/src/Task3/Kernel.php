@@ -104,7 +104,7 @@ class Kernel
     private function view(ResponseInterface $response): void
     {
         $this->setHeaders($response->getHeaders());
-        $this->setHeaders($response->getCookie());
+        $this->setHeaders($response->getCookies());
         print_r($response->getContent());
     }
 
