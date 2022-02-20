@@ -6,6 +6,8 @@ namespace App\Task3\Controller;
 
 use App\Task3\Entity\User;
 use App\Task3\Exception\AuthenticationException;
+use App\Task3\Http\AuthSuccessResponse;
+use App\Task3\Http\Cookie;
 use App\Task3\Interfaces\ResponseInterface;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ControllerInterface;
@@ -38,8 +40,10 @@ class AuthController extends ContentBuilder implements ControllerInterface
         $repository = new UserRepository();
         if ($repository->hasUser($data->username)) {
             $auth = new AuthService($request);
-            $auth->authentication($data->username, $data->password);
-            return $this->renderJson(['status' => 'ok']);
+            $token = $auth
+                ->authentication($data->username, $data->password)
+                ->getToken();
+            return new AuthSuccessResponse([Cookie::createAuth('token', $token)]);
         }
 
         /**

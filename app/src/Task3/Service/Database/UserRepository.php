@@ -28,7 +28,7 @@ class UserRepository extends Repository
             return null;
         }
 
-        $user = User::create($data->username, $data->password);
+        $user = User::create($data->username, $data->password_hash);
         $user->setId($data->id);
         return $user;
     }
