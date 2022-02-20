@@ -9,35 +9,35 @@ use App\Task3\Http\Response;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Service\Database\UserRepository;
+use App\Task3\Service\HasherService;
+use JsonException;
 
 /**
  * Join and Login User
  */
-class AuthController implements ControllerInterface
+class AuthController extends ContentBuilder implements ControllerInterface
 {
     /**
      * @param ServerRequest $request
      * @return Response
+     * @throws JsonException
+     * @throws JsonException
      */
     public function handle(ServerRequest $request): Response
     {
+        $data = json_decode($request->getBody(), flags: JSON_THROW_ON_ERROR);
 
-        $data = json_decode($request->getBody());
-
-        $user = User::create($data->username, $data->password);
-
-        $repository = new UserRepository();
+        $header = new HasherService();
+        $user = User::create(
+            $data->username,
+            $header->hash($data->password)
+        );
 
         if ($repository->hasUser($user->getUsername())) {
             //TODO: Auth
         }
 
         $repository->save($user);
-
-        return new Response(
-            '{"message":"ok"}',
-            Response::HTTP_OK,
-            ["Content-Type" => "application/json; charset=UTF-8"]
-        );
+        return $this->renderJson(['status' => 'ok']);
     }
 }

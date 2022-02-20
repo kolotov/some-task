@@ -32,9 +32,7 @@ class User
     public static function create(string $username, ?string $password = null): User
     {
         $user = new self($username);
-        if ($password) {
-            $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
-        }
+        $user->setPassword($password);
         return $user;
     }
 
