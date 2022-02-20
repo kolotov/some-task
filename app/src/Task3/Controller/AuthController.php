@@ -8,7 +8,7 @@ use App\Task3\Http\Response;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ControllerInterface;
 
-class LoginController  implements ControllerInterface
+class AuthController  implements ControllerInterface
 {
 
     public function handle(ServerRequest $request): Response
