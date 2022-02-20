@@ -87,14 +87,23 @@ class Kernel
     }
 
     /**
-     * ContentBuilder page
+     * Render page for client
      *
      * @param Response $response
      */
     private function view(Response $response): void
     {
         $headers = $response->getHeaders();
-        array_walk($headers, fn(string $header) => header($header));
+        array_walk(
+            $headers,
+            static function (string $header, string $key) {
+                if (is_numeric($key)) {
+                    header($header);
+                } else {
+                    header("$key: $header");
+                }
+            }
+        );
         print_r($response->getContent());
     }
 
