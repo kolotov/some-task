@@ -6,11 +6,13 @@ namespace App\Task3\Controller;
 
 use App\Task3\Entity\User;
 use App\Task3\Exception\AuthenticationException;
+use App\Task3\Exception\UnauthorizedException;
 use App\Task3\Interfaces\ResponseInterface;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Service\{AuthService, HasherService};
 use App\Task3\Service\Database\UserRepository;
+use Exception;
 use JsonException;
 use Webmozart\Assert\Assert;
 
@@ -23,6 +25,7 @@ class AuthController implements ControllerInterface
      * @param ServerRequest $request
      * @return ResponseInterface
      * @throws JsonException
+     * @throws UnauthorizedException
      * @throws AuthenticationException
      */
     public function handle(ServerRequest $request): ResponseInterface
@@ -31,13 +34,14 @@ class AuthController implements ControllerInterface
         $header = new HasherService();
         $auth = new AuthService($request, $repository, $header);
 
-        //TODO:: user DTO
-        //TODO:: validation
-
         $data = json_decode($request->getBody(), flags: JSON_THROW_ON_ERROR);
 
-        Assert::lengthBetween($data->username, 3, 50, 'username length must be between 3 and 50');
-        Assert::lengthBetween($data->password, 3, 50, 'password length must be between 3 and 16');
+        try {
+            Assert::lengthBetween($data->username, 3, 50, 'username length must be between 3 and 50');
+            Assert::lengthBetween($data->password, 3, 50, 'password length must be between 3 and 16');
+        } catch (Exception $e) {
+            throw new AuthenticationException($e->getMessage());
+        }
 
         /**
          * Authentication user

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Task3\Service;
 
 use App\Task3\Entity\User;
-use App\Task3\Exception\AuthenticationException;
+use App\Task3\Exception\UnauthorizedException;
 use App\Task3\Http\AuthSuccessResponse;
 use App\Task3\Http\Cookie;
 use App\Task3\Http\ServerRequest;
@@ -69,8 +69,8 @@ class AuthService
      * @param string $login
      * @param string $plainPassword
      * @return AuthSuccessResponse
-     * @throws AuthenticationException
      * @throws JsonException
+     * @throws UnauthorizedException
      */
     public function auth(string $login, string $plainPassword): AuthSuccessResponse
     {
@@ -81,7 +81,7 @@ class AuthService
         $user = $this->repository->loadByIdentifier($login);
 
         if (!$this->hasher->verify($user->getPassword(), $plainPassword)) {
-            throw new AuthenticationException('Wrong password');
+            throw new UnauthorizedException('Wrong password');
         }
 
         $this->token = $this->createToken();
@@ -161,6 +161,16 @@ class AuthService
         if (isset($_COOKIE['username'])) {
             unset($_COOKIE['username']);
             setcookie('username', '', -1, '/');
+        }
+    }
+
+    /**
+     * @throws UnauthorizedException
+     */
+    public function onlyAuthorized(): void
+    {
+        if (!$this->isAuthorised()) {
+            throw new UnauthorizedException("No access");
         }
     }
 }

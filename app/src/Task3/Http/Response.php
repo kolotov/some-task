@@ -14,11 +14,15 @@ class Response implements ResponseInterface
     public const HTTP_OK = 200;
     public const HTTP_NOT_FOUND = 404;
     public const HTTP_INTERNAL_SERVER_ERROR = 500;
+    public const HTTP_UNAUTHORIZED = 401;
+    public const HTTP_BAD_REQUEST = 400;
 
     public static array $statusTexts = [
         200 => 'OK',
+        401 => 'Unauthorized',
         404 => 'Not Found',
         500 => 'Internal Server Error',
+        400 => 'Bad Request',
     ];
 
     private array $headers = [];

@@ -16,6 +16,7 @@ return static function (Kernel $kernel): Kernel {
         ->route('/', 'GET', HomePageController::class)
         ->route('/auth', 'POST', AuthController::class)
         ->route('/logout', 'GET', AuthLogout::class)
+        ->route('/increment', 'PUT', IncrementController::class)
         ->route('/increment', 'GET', IncrementController::class);
     return $kernel;
 };

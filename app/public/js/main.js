@@ -1,12 +1,16 @@
 document.addEventListener("DOMContentLoaded", (event) => {
     const enter = document.getElementById("enter");
     const exit = document.getElementById("exit");
+    const update = document.getElementById("update");
 
     if (!!enter) {
         enter.onmousedown = (e) => submitAuthForm(e);
     }
     if (!!exit) {
         exit.onmousedown = (e) => logout(e);
+    }
+    if (!!update) {
+        update.onmousedown = (e) => incrementCounter(e);
     }
 });
 
@@ -25,7 +29,7 @@ const submitAuthForm = (e) => {
         .then(() => {location.reload()})
         .catch(error => showMsg(error));
 }
-//        .then(result => showResult(result))
+
 const logout = (e) => {
     return new Promise((resolve, reject) => {
         resolve(sendRequest('GET', '/logout'));
@@ -33,6 +37,20 @@ const logout = (e) => {
         .then(() => {location.reload()})
         .catch(error => showMsg(error));
 }
+
+const incrementCounter = (e) => {
+    const counter = document.getElementById("counter");
+
+    return new Promise((resolve, reject) => {
+        resolve(sendRequest('PUT', '/increment'));
+    })
+        .then(() => sendRequest('GET', '/increment'))
+        .then((result) => {
+            counter.innerHTML = result.toString();
+        })
+        .catch(error => showMsg(error));
+}
+
 
 /**
  * Send Request
@@ -66,12 +84,9 @@ const sendRequest = async(method, url, data = {}) => {
     if (!response.ok) {
         throw new Error(json.message);
     }
-    return json;
+    return json.result;
 }
 
-const showResult = (result) => {
-
-}
 
 const showMsg = (msg) => {
     const label = document.getElementById('msg-label');
@@ -83,3 +98,4 @@ const showMsg = (msg) => {
             label.style.setProperty('display', 'none', 'important');
         }, 2500);
     }}
+

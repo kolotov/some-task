@@ -34,6 +34,7 @@ class HomePageController extends ContentBuilder implements ControllerInterface
         return $this
             ->template('counter.html')
             ->set('title', 'Welcome' . $user->getUsername())
+            ->set('counter', (string)$user->getCounter())
             ->set('username', $user->getUsername())
             ->render();
     }

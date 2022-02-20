@@ -67,4 +67,34 @@ class UserRepository extends Repository
             ->bind('password', $user->getPassword())
             ->execute();
     }
+
+    /**
+     * Update counter
+     *
+     * @param User $user
+     */
+    public function updateCounter(User $user)
+    {
+        $this->query(
+            "UPDATE users SET counter = counter + 1
+                  WHERE username = :username"
+        )
+            ->bind('username', $user->getUsername())
+            ->execute();
+    }
+
+    /**
+     * Get counter
+     *
+     * @param User $user
+     * @return int
+     */
+    public function getCounter(User $user): int
+    {
+        return (int) $this->query(
+            "SELECT counter FROM users WHERE username = :username"
+        )
+            ->bind('username', $user->getUsername())
+            ->execute()->getScalarResult();
+    }
 }
