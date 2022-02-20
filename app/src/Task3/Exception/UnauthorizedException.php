@@ -8,10 +8,10 @@ use App\Task3\Http\Response;
 use App\Task3\Interfaces\ExceptionInterface;
 use Exception;
 
-class AuthenticationException extends Exception implements ExceptionInterface
+class UnauthorizedException extends Exception implements ExceptionInterface
 {
     public function __construct(string $message = '')
     {
-        parent::__construct($message, Response::HTTP_BAD_REQUEST);
+        parent::__construct($message, Response::HTTP_UNAUTHORIZED);
     }
 }

@@ -10,6 +10,7 @@ use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Exception\NotFoundException;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Http\Response;
+use App\Task3\Interfaces\ExceptionInterface;
 use App\Task3\Interfaces\ResponseInterface;
 use JsonException;
 use Throwable;
@@ -142,10 +143,9 @@ class Kernel
 
         $data = ['status' => 'error', 'message' => $e->getMessage()];
 
-        $code = match (get_class($e)) {
-            NotFoundException::class => Response::HTTP_NOT_FOUND,
-            default => Response::HTTP_INTERNAL_SERVER_ERROR
-        };
+        $code = $e instanceof ExceptionInterface
+            ? $e->getCode()
+            : Response::HTTP_INTERNAL_SERVER_ERROR;
 
         return match ($mime) {
             'application/json' => new JsonResponse($data, $code),
