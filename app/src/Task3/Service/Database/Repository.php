@@ -72,6 +72,6 @@ class Repository
      */
     public function getCount(): int
     {
-        return $this->stmt->rowCount();
+        return $this->stmt->columnCount();
     }
 }

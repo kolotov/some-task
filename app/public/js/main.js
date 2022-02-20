@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 const submitAuthForm = (e) => {
     return new Promise((resolve, reject) => {
         let data = {};
-        data.login = 'user1';
-        data.password = 'password';
+        data.username = document.getElementById("username").value;
+        data.password = document.getElementById("password").value;
 
         resolve(sendRequest('POST', '/auth', data));
     })
