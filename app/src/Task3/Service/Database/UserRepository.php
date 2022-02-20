@@ -12,17 +12,6 @@ use App\Task3\Entity\User;
 class UserRepository extends Repository
 {
     /**
-     * Check if user exists
-     *
-     * @param string $identifier
-     * @return bool
-     */
-    public function hasUser(string $identifier): bool
-    {
-        return (null !== $this->loadByIdentifier($identifier));
-    }
-
-    /**
      * @param string $identifier
      * @return User|null
      */
@@ -39,9 +28,27 @@ class UserRepository extends Repository
             return null;
         }
 
-        $user = User::create($data->username);
-        $user->setCounter($data->counter);
+        $user = User::create($data->username, $data->password);
+        $user->setId($data->id);
         return $user;
+    }
+
+    /**
+     * Check user exists
+     *
+     * @param string $identifier
+     * @return bool
+     */
+    public function hasUser(string $identifier): bool
+    {
+        /** @var int $count */
+        $count = $this->query(
+            "SELECT count(id) FROM users WHERE username = :username"
+        )
+            ->bind('username', $identifier)
+            ->execute()
+            ->getScalarResult();
+        return $count > 0;
     }
 
     /**

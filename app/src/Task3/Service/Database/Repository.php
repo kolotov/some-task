@@ -68,10 +68,10 @@ class Repository
     }
 
     /**
-     * @return int
+     * @return mixed
      */
-    public function getCount(): int
+    public function getScalarResult(): mixed
     {
-        return $this->stmt->columnCount();
+        return $this->stmt->fetchColumn();
     }
 }
