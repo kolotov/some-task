@@ -13,12 +13,12 @@ class HomePageController implements ControllerInterface
 {
     public function handle(ServerRequest $request): Response
     {
-        $mainPage = new ContentBuilder('main.html');
-        $content = $mainPage->set('content', 'test')->set('title', 'test task')->build();
+        $mainPage = new ContentBuilder();
 
-        return new Response(
-            $content,
-            Response::HTTP_OK
-        );
+        return $mainPage
+            ->template('main.html')
+            ->set('content', 'test')
+            ->set('title', 'test task')
+            ->render();
     }
 }

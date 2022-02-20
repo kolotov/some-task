@@ -4,24 +4,26 @@ declare(strict_types=1);
 
 namespace App\Task3\Service;
 
+use App\Task3\Http\Response;
 use App\Task3\Kernel;
 
 /**
- * Template parser
+ * Template processor
  */
 class ContentBuilder
 {
-    private string $path;
     private string $content = '';
     private array $tokens = [];
 
     /**
      * @param string $template
+     * @return ContentBuilder
      */
-    public function __construct(string $template)
+    public function template(string $template): ContentBuilder
     {
-        $this->path = Kernel::getAppDir() . 'Template/' . $template;
-        $this->content = file_get_contents($this->path);
+        $path = Kernel::getAppDir() . 'Template/' . $template;
+        $this->content = file_get_contents($path);
+        return $this;
     }
 
     /**
@@ -36,20 +38,34 @@ class ContentBuilder
         $this->tokens = array_replace($this->tokens, [$token => $value]);
         return $this;
     }
+
     /**
      * Build content
      *
+     * @param $content
      * @return string
      */
-    public function build(): string
+    private function build($content): string
     {
         array_walk(
             $this->tokens,
-            function ($value, $token) {
-                $this->content = str_replace("{{{$token}}}", $value, $this->content);
+            function ($value, $token) use ($content) {
+                $content = str_replace("{{{$token}}}", $value, $content);
             }
         );
+        return $content;
+    }
 
-        return $this->content;
+    /**
+     * Render content
+     *
+     * @return Response
+     */
+    public function render(): Response
+    {
+        return new Response(
+            $this->build($this->content),
+            Response::HTTP_OK
+        );
     }
 }
