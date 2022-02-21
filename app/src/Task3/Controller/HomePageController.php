@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Task3\Controller;
 
-use App\Task3\Entity\User;
 use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ResponseInterface;
@@ -27,6 +26,7 @@ class HomePageController extends ContentBuilder implements ControllerInterface
         if (null === $user) {
             return $this
                 ->template('main.html')
+                ->extends('base.html')
                 ->set('title', 'Join/login')
                 ->render();
         }

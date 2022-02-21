@@ -12,6 +12,10 @@ html, body {
     max-width: 600px;
 }
 
+.form-input-label {
+    min-width: 110px;
+}
+
 .msg {
     text-align: left;
 }

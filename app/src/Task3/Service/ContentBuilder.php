@@ -17,15 +17,40 @@ class ContentBuilder
 {
     private string $content = '';
     private array $tokens = [];
+    private string $path;
+
+    public function __construct()
+    {
+        $this->path = Kernel::getAppDir() . 'Template/';
+    }
 
     /**
+     * Load template
+     *
      * @param string $template
      * @return ContentBuilder
      */
     public function template(string $template): ContentBuilder
     {
-        $path = Kernel::getAppDir() . 'Template/' . $template;
-        $this->content = file_get_contents($path);
+        $template = file_get_contents($this->path . $template);
+        $this->content = empty($this->content) ?
+            $template :
+            $this->replace($this->content, ['content' => $template]);
+
+        return $this;
+    }
+
+    /**
+     * Extends template
+     *
+     * @param string $template
+     * @return $this
+     */
+    public function extends(string $template): ContentBuilder
+    {
+        $extends = file_get_contents($this->path . $template);
+        $this->content = $this
+            ->replace($extends, ['content' => $this->content]);
         return $this;
     }
 
@@ -43,20 +68,63 @@ class ContentBuilder
     }
 
     /**
-     * Build content
+     * Parse tokens
      *
-     * @param $content
+     * @param string $content
+     * @return array
+     */
+    private function parseTokens(string $content): array
+    {
+        $matches = [];
+        preg_match_all("/{{(.*?)}}/s", $content, $matches);
+        return $matches[1];
+    }
+
+    /**
+     * Remove empty tokens
+     *
+     * @param string $content
      * @return string
      */
-    private function build($content): string
+    private function removeEmptyTokens(string $content): string
+    {
+        $tokensList = $this->parseTokens($content);
+        $tokens = array_map(fn() => '', array_flip($tokensList));
+        return $this->replace($content, $tokens, false);
+    }
+
+    /**
+     * Replace tokens to value
+     *
+     * @param string $content
+     * @param array $tokens
+     * @param bool $keepEmpty
+     * @return string
+     */
+    private function replace(string $content, array $tokens, bool $keepEmpty = true): string
     {
         array_walk(
-            $this->tokens,
-            function ($value, $token) use (&$content) {
-                $content = str_replace("{{{$token}}}", $value, $content);
+            $tokens,
+            function ($value, $token) use (&$content, $keepEmpty) {
+                if ((!empty($value) || !$keepEmpty)) {
+                    $content = str_replace("{{{$token}}}", $value, $content);
+                }
             }
         );
         return $content;
+    }
+
+    /**
+     * Build content
+     *
+     * @param string $content
+     * @param array $tokens
+     * @return string
+     */
+    private function build(string $content, array $tokens): string
+    {
+        return $this
+            ->removeEmptyTokens($this->replace($content, $tokens));
     }
 
     /**
@@ -67,7 +135,7 @@ class ContentBuilder
     public function render(): ResponseInterface
     {
         return new Response(
-            $this->build($this->content),
+            $this->build($this->content, $this->tokens),
             Response::HTTP_OK,
             ["Cache-Control" => "no-cache"]
         );
