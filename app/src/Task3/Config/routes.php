@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Configure routes
+ */
+
 declare(strict_types=1);
 
 use App\Task3\Controller\AuthLogout;
@@ -8,9 +12,6 @@ use App\Task3\Controller\IncrementController;
 use App\Task3\Controller\AuthController;
 use App\Task3\Kernel;
 
-/**
- * Configure routes
- */
 return static function (Kernel $kernel): Kernel {
     $kernel
         ->route('/', 'GET', HomePageController::class)

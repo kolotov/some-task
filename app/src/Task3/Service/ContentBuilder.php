@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Task3\Service;
 
-use App\Task3\Http\{Response, JsonResponse};
+use App\Task3\Http\Response;
+use App\Task3\Http\JsonResponse;
 use App\Task3\Interfaces\ResponseInterface;
 use App\Task3\Kernel;
 use JsonException;
