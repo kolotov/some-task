@@ -2,3 +2,4 @@
 app/vendor
 app/var
 app/src/Task3/public/bootstrap/
+.DS_Store
