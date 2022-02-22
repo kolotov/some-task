@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
     if (!!update) {
         update.onmousedown = (e) => incrementCounter(e);
     }
+
+    updateCounter();
 });
 
 /**
@@ -39,18 +41,17 @@ const logout = (e) => {
 }
 
 const incrementCounter = (e) => {
-    const counter = document.getElementById("counter");
 
     return new Promise((resolve, reject) => {
         resolve(sendRequest('PUT', '/increment'));
     })
-        .then(() => sendRequest('GET', '/increment'))
-        .then((result) => {
-            counter.innerHTML = result.toString();
-        })
+        .then(() => updateCounter())
         .catch(error => showMsg(error));
 }
 
+
+const updateCounter = () => sendRequest('GET', '/increment')
+.then((result) => document.getElementById("counter").innerHTML = result.toString())
 
 /**
  * Send Request
