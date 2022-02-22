@@ -36,14 +36,14 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "rm -rf public/bootstrap",
-      "mkdir -p public/bootstrap",
-      "cp -r vendor/twbs/bootstrap/dist public/bootstrap"
+      "rm -rf src/Task3/public/bootstrap",
+      "mkdir -p src/Task3/public/bootstrap",
+      "cp -r vendor/twbs/bootstrap/dist src/Task3/public/bootstrap"
     ],
     "post-update-cmd": [
-      "rm -rf public/bootstrap",
-      "mkdir -p public/bootstrap",
-      "cp -rf vendor/twbs/bootstrap/dist public/bootstrap"
+      "rm -rf src/Task3/public/bootstrap",
+      "mkdir -p src/Task3/public/bootstrap",
+      "cp -rf vendor/twbs/bootstrap/dist src/Task3/public/bootstrap"
     ],
     "test": "phpunit --testdox --colors=auto tests",
     "fix": "php-cs-fixer fix --config=.php_cs.dist.php src tests",
