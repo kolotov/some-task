@@ -44,7 +44,12 @@ class Kernel
             $request = new ServerRequest();
         }
 
-        $response = $this->handle($request);
+        try {
+            $response = $this->handle($request);
+        } catch (Throwable $e) {
+            $response = $this->processException($e, $request);
+        }
+
         $this->view($response);
     }
 
@@ -67,15 +72,12 @@ class Kernel
      *
      * @param ServerRequest $request
      * @return ResponseInterface
+     * @throws NotFoundException
      */
     private function handle(ServerRequest $request): ResponseInterface
     {
-        try {
-            $handler = $this->getController($request);
-            return $handler->handle($request);
-        } catch (Throwable $e) {
-            return $this->processException($e, $request);
-        }
+        $handler = $this->getController($request);
+        return $handler->handle($request);
     }
 
     /**
