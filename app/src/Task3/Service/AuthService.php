@@ -15,7 +15,7 @@ use JsonException;
 class AuthService
 {
     private bool $isSessionStarted = false;
-    private string $token;
+    private ?string $token = null;
 
     /**
      * @param ServerRequest $request
@@ -31,7 +31,7 @@ class AuthService
             $this->startSession();
         }
 
-        $this->token = ($_SESSION['token'] ?? '');
+        $this->token = ($_SESSION['token'] ?? null);
     }
 
     /**
@@ -59,8 +59,12 @@ class AuthService
      */
     public function isAuthorised(): bool
     {
-        $clientToken = $this->request->getCookies()['token'] ?? '';
-        return ($clientToken === $this->token);
+        $clientToken = $this->request->getCookies()['token'] ?? null;
+        return (
+            $clientToken === $this->token &&
+            !is_null($clientToken) &&
+            !is_null($this->token)
+        );
     }
 
     /**
