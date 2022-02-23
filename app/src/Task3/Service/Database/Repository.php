@@ -12,9 +12,9 @@ class Repository
     private PDOStatement $stmt;
     private PDO $pdo;
 
-    public function __construct()
+    public function __construct(PdoDataBase $pdoDataBase)
     {
-        $this->pdo = PdoDataBase::create();
+        $this->pdo = $pdoDataBase::create();
     }
 
     /**

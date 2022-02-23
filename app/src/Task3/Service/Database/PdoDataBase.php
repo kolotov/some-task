@@ -17,7 +17,7 @@ class PdoDataBase
     private ?string $user = null;
     private ?string $password = null;
 
-    private function __construct()
+    public function __construct()
     {
     }
 

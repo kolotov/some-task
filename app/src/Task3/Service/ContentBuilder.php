@@ -15,6 +15,9 @@ use JsonException;
  */
 class ContentBuilder
 {
+    /**
+     * @var string
+     */
     private string $content = '';
     private array $tokens = [];
     private string $path;

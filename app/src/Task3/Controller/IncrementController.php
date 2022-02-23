@@ -4,16 +4,11 @@ declare(strict_types=1);
 
 namespace App\Task3\Controller;
 
-use App\Task3\Exception\NotFoundException;
-use App\Task3\Exception\UnauthorizedException;
-use App\Task3\Http\JsonResponse;
-use App\Task3\Http\Response;
-use App\Task3\Http\ServerRequest;
-use App\Task3\Interfaces\ControllerInterface;
-use App\Task3\Interfaces\ResponseInterface;
+use App\Task3\Exception\{NotFoundException, UnauthorizedException};
+use App\Task3\Http\{JsonResponse, ServerRequest};
+use App\Task3\Interfaces\{ControllerInterface, ResponseInterface};
 use App\Task3\Service\AuthService;
 use App\Task3\Service\Database\UserRepository;
-use App\Task3\Service\HasherService;
 use JsonException;
 
 /**
@@ -21,28 +16,33 @@ use JsonException;
  */
 class IncrementController implements ControllerInterface
 {
+    public function __construct(
+        private UserRepository $repository,
+        private AuthService    $auth
+    )
+    {
+    }
+
     /**
-     * @param ServerRequest $request
-     * @return ResponseInterface
+     * {@inheritDoc}
+     *
      * @throws UnauthorizedException
-     * @throws NotFoundException
      * @throws JsonException
+     * @throws NotFoundException
      */
     public function handle(ServerRequest $request): ResponseInterface
     {
-        $repository = new UserRepository();
-        $auth = new AuthService($request, $repository, new HasherService());
-        $auth->onlyAuthorized();
+        $this->auth->onlyAuthorized();
 
-        $user = $auth->getUser();
+        $user = $this->auth->getUser();
 
         if ('PUT' === $request->getMethod()) {
-            $repository->updateCounter($user);
+            $this->repository->updateCounter($user);
             return new JsonResponse(['status' => 'ok']);
         }
 
         if ('GET' === $request->getMethod()) {
-            $counter = $repository->getCounter($user);
+            $counter = $this->repository->getCounter($user);
             return new JsonResponse(['status' => 'ok', 'result' => $counter]);
         }
 

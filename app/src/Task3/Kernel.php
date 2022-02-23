@@ -12,29 +12,44 @@ use App\Task3\Http\ServerRequest;
 use App\Task3\Http\Response;
 use App\Task3\Interfaces\ExceptionInterface;
 use App\Task3\Interfaces\ResponseInterface;
+use App\Task3\Kernel\Container;
 use JsonException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionParameter;
 use Throwable;
 
 /**
  * Kernel framework
- * TODO:: God object. Need should be divided it
- * TODO:: Implement container
  */
 class Kernel
 {
     /** @var Route[] */
     private array $routes;
 
-    private function __construct()
+    private function __construct(
+        private Container $services
+    )
     {
+        $this->load();
     }
 
     /** Build app */
     public static function create(): Kernel
     {
-        $kernel = new self();
-        (require $kernel::getAppDir() . 'Config/routes.php')($kernel);
-        return $kernel;
+        return new self(new Container());
+    }
+
+    public function load()
+    {
+        $this->services->set(Container::class, $this->services);
+        $this->services->set(ServerRequest::class, new ServerRequest());
+        $this->services->set(Kernel::class, $this);
+        (require self::getAppDir() . 'Config/routes.php')($this);
+        (require self::getAppDir() . 'Config/services.php')($this);
     }
 
     /** Run app */
@@ -68,14 +83,29 @@ class Kernel
     }
 
     /**
+     * Add service
+     *
+     * @param string $className
+     * @return $this
+     * @throws ReflectionException
+     */
+    public function addService(string $className): Kernel
+    {
+        $this->services->set($className, $this->newInstance($className));
+        return $this;
+    }
+
+    /**
      * Handle request
      *
      * @param ServerRequest $request
      * @return ResponseInterface
      * @throws NotFoundException
+     * @throws ReflectionException
      */
     private function handle(ServerRequest $request): ResponseInterface
     {
+        /** @var ControllerInterface $handler */
         $handler = $this->getController($request);
         return $handler->handle($request);
     }
@@ -84,10 +114,11 @@ class Kernel
      * Dispatcher route
      *
      * @param ServerRequest $request
-     * @return ControllerInterface
+     * @return object
      * @throws NotFoundException
+     * @throws ReflectionException
      */
-    private function getController(ServerRequest $request): ControllerInterface
+    private function getController(ServerRequest $request): object
     {
         $routeName = Route::buildName($request->getUri());
         $method = $request->getMethod();
@@ -95,8 +126,10 @@ class Kernel
         if (!isset($this->routes[$routeName][$method])) {
             throw new NotFoundException(Response::$statusTexts[Response::HTTP_NOT_FOUND]);
         }
-        $className = $this->routes[$routeName][$method]->getController();
-        return new $className();
+
+        /** @var Route $route */
+        $route = $this->routes[$routeName][$method];
+        return $this->newInstance($route->getController());
     }
 
     /**
@@ -155,6 +188,7 @@ class Kernel
         };
     }
 
+
     /**
      * Project root path
      * @return string
@@ -162,5 +196,47 @@ class Kernel
     public static function getAppDir(): string
     {
         return __DIR__ . '/';
+    }
+
+    /**
+     * Create a new Instance
+     *
+     * @throws ReflectionException
+     */
+    private function newInstance(string $className): object
+    {
+        $reflection = new ReflectionClass($className);
+        $construct = $reflection->getConstructor();
+
+        if (null === $construct || 0 === $construct->getNumberOfParameters()) {
+            return $reflection->newInstance();
+        }
+
+        $services = $this->getServices($construct);
+        return $reflection->newInstanceArgs($services);
+    }
+
+    /**
+     * Get a services for the constructor
+     *
+     * @param ReflectionMethod $construct
+     * @return array
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    private function getServices(ReflectionMethod $construct): array
+    {
+        $params = $construct->getParameters();
+        return array_reduce(
+            $params,
+            function (array $services, ReflectionParameter $param) {
+                $serviceClass = $param->getType()?->getName();
+                if (null === $serviceClass || null === $this->services->get($serviceClass)) {
+                    return $services;
+                }
+                $services[] = $this->services->get($serviceClass);
+                return $services;
+            }
+            , []);
     }
 }

@@ -9,5 +9,11 @@ use App\Task3\Http\ServerRequest;
 
 interface ControllerInterface
 {
+    /**
+     * Request Handler
+     *
+     * @param ServerRequest $request
+     * @return ResponseInterface
+     */
     public function handle(ServerRequest $request): ResponseInterface;
 }

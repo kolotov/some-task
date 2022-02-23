@@ -7,31 +7,41 @@ namespace App\Task3\Controller;
 use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Http\ServerRequest;
 use App\Task3\Interfaces\ResponseInterface;
-use App\Task3\Service\AuthService;
-use App\Task3\Service\ContentBuilder;
-use App\Task3\Service\Database\UserRepository;
-use App\Task3\Service\HasherService;
+use App\Task3\Service\{AuthService, ContentBuilder};
 
-class HomePageController extends ContentBuilder implements ControllerInterface
+/**
+ * Home page
+ */
+class HomePageController implements ControllerInterface
 {
+
     /**
-     * @param ServerRequest $request
-     * @return ResponseInterface
+     * @param AuthService $auth
+     * @param ContentBuilder $template
+     */
+    public function __construct(
+        private AuthService $auth,
+        private ContentBuilder $template
+    )
+    {
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function handle(ServerRequest $request): ResponseInterface
     {
-        $auth = new AuthService($request, new UserRepository(), new HasherService());
-        $user =  $auth->getUser();
+        $user =  $this->auth->getUser();
 
         if (null === $user) {
-            return $this
+            return $this->template
                 ->template('main.html')
                 ->extends('base.html')
                 ->set('title', 'Join/login')
                 ->render();
         }
 
-        return $this
+        return $this->template
             ->template('counter.html')
             ->set('title', 'Welcome' . $user->getUsername())
             ->set('counter', (string)$user->getCounter())

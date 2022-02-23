@@ -9,24 +9,32 @@ use App\Task3\Interfaces\ControllerInterface;
 use App\Task3\Interfaces\ResponseInterface;
 use App\Task3\Service\AuthService;
 use App\Task3\Service\ContentBuilder;
-use App\Task3\Service\Database\UserRepository;
-use App\Task3\Service\HasherService;
 use JsonException;
 
 /**
  * User logout
  */
-class AuthLogout extends ContentBuilder implements ControllerInterface
+class AuthLogout implements ControllerInterface
 {
+
     /**
+     * @param AuthService $auth
+     * @param ContentBuilder $template
+     */
+    public function __construct(
+        private AuthService    $auth,
+        private ContentBuilder $template
+    )
+    {
+    }
+
+    /**
+     * {@inheritDoc}
      * @throws JsonException
      */
     public function handle(ServerRequest $request): ResponseInterface
     {
-        $repository = new UserRepository();
-        $header = new HasherService();
-        $auth = new AuthService($request, $repository, $header);
-        $auth->logout();
-        return $this->renderJson(['status' => 'ok']);
+        $this->auth->logout();
+        return $this->template->renderJson(['status' => 'ok']);
     }
 }
