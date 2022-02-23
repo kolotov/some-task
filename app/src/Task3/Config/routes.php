@@ -12,12 +12,11 @@ use App\Task3\Controller\IncrementController;
 use App\Task3\Controller\AuthController;
 use App\Task3\Kernel;
 
-return static function (Kernel $kernel): Kernel {
+return static fn (Kernel $kernel): Kernel =>
     $kernel
         ->route('/', 'GET', HomePageController::class)
         ->route('/auth', 'POST', AuthController::class)
         ->route('/logout', 'GET', AuthLogout::class)
         ->route('/increment', 'PUT', IncrementController::class)
         ->route('/increment', 'GET', IncrementController::class);
-    return $kernel;
-};
+
