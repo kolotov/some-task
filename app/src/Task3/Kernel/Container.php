@@ -10,7 +10,7 @@ use Psr\Container\NotFoundExceptionInterface;
 
 class Container implements ContainerInterface
 {
-    private $services = [];
+    private array $services = [];
 
     public function set(string $id, object $service): void
     {

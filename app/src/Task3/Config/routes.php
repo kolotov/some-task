@@ -19,4 +19,3 @@ return static fn (Kernel $kernel): Kernel =>
         ->route('/logout', 'GET', AuthLogout::class)
         ->route('/increment', 'PUT', IncrementController::class)
         ->route('/increment', 'GET', IncrementController::class);
-

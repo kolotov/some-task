@@ -11,4 +11,3 @@ use App\Task3\Service\Database\PdoDataBase;
 
 return static fn (PdoDataBase $db): PdoDataBase =>
     $db->setDsn('sqlite:' . Kernel::getAppDir() . '/../../var/db.sqlite');
-

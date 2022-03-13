@@ -18,9 +18,8 @@ class IncrementController implements ControllerInterface
 {
     public function __construct(
         private UserRepository $repository,
-        private AuthService    $auth
-    )
-    {
+        private AuthService $auth
+    ) {
     }
 
     /**

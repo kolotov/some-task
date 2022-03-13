@@ -14,7 +14,6 @@ use App\Task3\Service\{AuthService, ContentBuilder};
  */
 class HomePageController implements ControllerInterface
 {
-
     /**
      * @param AuthService $auth
      * @param ContentBuilder $template
@@ -22,8 +21,7 @@ class HomePageController implements ControllerInterface
     public function __construct(
         private AuthService $auth,
         private ContentBuilder $template
-    )
-    {
+    ) {
     }
 
     /**

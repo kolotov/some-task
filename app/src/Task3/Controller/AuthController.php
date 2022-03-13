@@ -26,11 +26,10 @@ class AuthController implements ControllerInterface
      * @param HasherService $header
      */
     public function __construct(
-        private AuthService    $auth,
+        private AuthService $auth,
         private UserRepository $repository,
-        private HasherService  $header
-    )
-    {
+        private HasherService $header
+    ) {
     }
 
     /**

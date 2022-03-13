@@ -16,16 +16,14 @@ use JsonException;
  */
 class AuthLogout implements ControllerInterface
 {
-
     /**
      * @param AuthService $auth
      * @param ContentBuilder $template
      */
     public function __construct(
-        private AuthService    $auth,
+        private AuthService $auth,
         private ContentBuilder $template
-    )
-    {
+    ) {
     }
 
     /**

@@ -32,8 +32,7 @@ class Kernel
 
     private function __construct(
         private Container $services
-    )
-    {
+    ) {
         $this->load();
     }
 
@@ -236,7 +235,8 @@ class Kernel
                 }
                 $services[] = $this->services->get($serviceClass);
                 return $services;
-            }
-            , []);
+            },
+            []
+        );
     }
 }
